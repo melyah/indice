@@ -1,0 +1,298 @@
+// Base de conocimientos de maquillaje
+const makeupTopics = [
+    {
+        id: 'base',
+        title: 'Base y Piel',
+        keywords: ['base', 'foundation', 'corrector', 'piel', 'primer', 'polvo', 'contouring', 'contorno'],
+        responses: [
+            '✨ Para una base perfecta, aplica primer primero, luego foundation con movimientos circulares y sella con polvo translúcido.',
+            '💄 El corrector debe ser un tono más claro que tu piel. Aplícalo en triángulo bajo los ojos y difumina hacia afuera.',
+            '🌟 Para contouring natural, usa un tono 2 sombras más oscuro que tu piel en los huecos de las mejillas y difumina bien.',
+            '✨ El primer es clave para que el maquillaje dure más. Aplícalo después del hidratante y antes de la base.',
+            '💫 Para piel grasa, usa base oil-free y sella con polvo. Para piel seca, hidrata bien antes de aplicar base.'
+        ]
+    },
+    {
+        id: 'ojos',
+        title: 'Maquillaje de Ojos',
+        keywords: ['ojos', 'sombras', 'delineador', 'pestañas', 'cejas', 'smokey', 'cut crease', 'mascara'],
+        responses: [
+            '👁️ Para un smokey eye básico: aplica sombra oscura en el párpado móvil, difumina hacia arriba y agrega brillo en el lagrimal.',
+            '✨ Delineador perfecto: comienza desde el centro del ojo hacia afuera, luego del centro hacia el lagrimal para mejor control.',
+            '🎨 Para cejas naturales: cepilla hacia arriba, rellena espacios vacíos con trazos como pelos y fija con gel transparente.',
+            '💫 Para ojos pequeños: usa sombras claras en el párpado móvil y oscuras solo en el pliegue externo.',
+            '🌟 Truco para pestañas largas: aplica máscara en zigzag desde la raíz hasta las puntas, deja secar y aplica segunda capa.'
+        ]
+    },
+    {
+        id: 'labios',
+        title: 'Labios',
+        keywords: ['labios', 'lipstick', 'gloss', 'nude', 'rojo', 'perfilador', 'mate', 'brillo'],
+        responses: [
+            '💋 Para labios perfectos: exfolia, hidrata, aplica perfilador y luego el color desde el centro hacia afuera.',
+            '✨ Labios más voluminosos: usa perfilador ligeramente más oscuro que el labial y agrega gloss en el centro.',
+            '🌹 Para que el labial dure más: aplica base, luego labial, presiona con papel tissue y aplica otra capa.',
+            '💄 Labios mate sin resequedad: hidrata bien antes, aplica bálsamo, retira exceso y luego el labial mate.',
+            '✨ Para labios finos: usa perfilador un poco fuera del borde natural y rellena con color claro.'
+        ]
+    },
+    {
+        id: 'productos',
+        title: 'Recomendaciones',
+        keywords: ['producto', 'recomendación', 'marca', 'precio', 'drugstore', 'high end', 'barato', 'caro'],
+        responses: [
+            '🛍️ Para principiantes recomiendo: base de L\'Oréal, sombras de Maybelline, mascara de Essence y labiales de Revlon.',
+            '💎 Productos de farmacia increíbles: Corrector de Maybelline Fit Me, rubor de Milani, delineador de NYX.',
+            '✨ Inversión que vale la pena: una buena base, brochas de calidad y un buen corrector son la clave del maquillaje perfecto.',
+            '🌟 Marcas accesibles y buenas: Essence, Catrice, NYX, Maybelline, L\'Oréal y Revlon tienen excelente calidad-precio.',
+            '💫 Para brochas: Real Techniques y EcoTools son marcas asequibles con excelente calidad.'
+        ]
+    },
+    {
+        id: 'tutoriales',
+        title: 'Tutoriales',
+        keywords: ['tutorial', 'paso a paso', 'como hacer', 'enseñar', 'aprender', 'principiante'],
+        responses: [
+            '📚 Tutorial básico diario: 1) Primer 2) Base 3) Corrector 4) Polvo 5) Rubor 6) Máscara 7) Labial nude',
+            '🎯 Look de noche paso a paso: 1) Smokey eye 2) Delineador grueso 3) Pestañas postizas 4) Contouring 5) Labial rojo',
+            '✨ Maquillaje natural: usa base ligera, rubor durazno, máscara marrón y labial nude rosado.',
+            '🌟 Para eventos: intensifica ojos con sombras metálicas, usa delineador líquido y labial de larga duración.',
+            '💄 Look romántico: sombras rosadas, rubor coral, labios en tonos berry y pestañas bien definidas.'
+        ]
+    }
+];
+
+const quickSuggestions = [
+    '¿Cómo hacer un smokey eye?',
+    'Rutina de maquillaje diaria',
+    'Productos para principiantes',
+    'Maquillaje para ojos pequeños',
+    'Labios mate que no resequen',
+    'Contouring para rostro redondo',
+    'Base para piel grasa',
+    'Cejas perfectas paso a paso',
+    'Maquillaje de noche elegante',
+    'Productos de farmacia buenos'
+];
+
+// Variables globales
+let messageCounter = 0;
+let isTyping = false;
+
+// Inicialización
+document.addEventListener('DOMContentLoaded', function() {
+    // Configurar tiempo inicial
+    document.getElementById('initialTime').textContent = getCurrentTime();
+    
+    // Event listeners
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+    
+    messageInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+    
+    messageInput.addEventListener('input', function() {
+        sendBtn.disabled = !this.value.trim();
+    });
+    
+    // Inicializar botón como deshabilitado
+    sendBtn.disabled = true;
+});
+
+// Función para obtener tiempo actual
+function getCurrentTime() {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+// Función para enviar mensaje
+function sendMessage() {
+    const messageInput = document.getElementById('messageInput');
+    const message = messageInput.value.trim();
+    
+    if (!message || isTyping) return;
+    
+    // Limpiar input
+    messageInput.value = '';
+    document.getElementById('sendBtn').disabled = true;
+    
+    // Agregar mensaje del usuario
+    addUserMessage(message);
+    
+    // Mostrar indicador de escritura
+    showTypingIndicator();
+    
+    // Simular respuesta del bot
+    setTimeout(() => {
+        hideTypingIndicator();
+        const botResponse = getBotResponse(message);
+        addBotMessage(botResponse);
+    }, 1000 + Math.random() * 1500);
+}
+
+// Función para enviar sugerencia
+function sendSuggestion(suggestion) {
+    if (isTyping) return;
+    
+    addUserMessage(suggestion);
+    showTypingIndicator();
+    
+    setTimeout(() => {
+        hideTypingIndicator();
+        const botResponse = getBotResponse(suggestion);
+        addBotMessage(botResponse);
+    }, 800 + Math.random() * 1000);
+}
+
+// Función para agregar mensaje del usuario
+function addUserMessage(text) {
+    const messagesContainer = document.getElementById('chatMessages');
+    const messageId = ++messageCounter;
+    
+    const messageHTML = `
+        <div class="message user-message" id="message-${messageId}">
+            <div class="message-avatar">
+                <svg class="user-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
+            </div>
+            <div class="message-content">
+                <div class="message-bubble">
+                    <p>${text}</p>
+                    <span class="message-time">${getCurrentTime()}</span>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    messagesContainer.insertAdjacentHTML('beforeend', messageHTML);
+    scrollToBottom();
+}
+
+// Función para agregar mensaje del bot
+function addBotMessage(text) {
+    const messagesContainer = document.getElementById('chatMessages');
+    const messageId = ++messageCounter;
+    const showSuggestions = Math.random() > 0.6;
+    
+    let suggestionsHTML = '';
+    if (showSuggestions) {
+        const randomSuggestions = getRandomSuggestions(2);
+        suggestionsHTML = `
+            <div class="suggestions">
+                <p class="suggestions-title">Sugerencias:</p>
+                ${randomSuggestions.map(suggestion => 
+                    `<button class="suggestion-btn" onclick="sendSuggestion('${suggestion}')">${suggestion}</button>`
+                ).join('')}
+            </div>
+        `;
+    }
+    
+    const messageHTML = `
+        <div class="message bot-message" id="message-${messageId}">
+            <div class="message-avatar">
+                <svg class="bot-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 8V4H8"/>
+                    <rect width="16" height="12" x="4" y="8" rx="2"/>
+                    <path d="M2 14h2"/>
+                    <path d="M20 14h2"/>
+                    <path d="M15 13v2"/>
+                    <path d="M9 13v2"/>
+                </svg>
+            </div>
+            <div class="message-content">
+                <div class="message-bubble">
+                    <p>${text}</p>
+                    <span class="message-time">${getCurrentTime()}</span>
+                </div>
+                ${suggestionsHTML}
+            </div>
+        </div>
+    `;
+    
+    messagesContainer.insertAdjacentHTML('beforeend', messageHTML);
+    scrollToBottom();
+}
+
+// Función para obtener respuesta del bot
+function getBotResponse(userMessage) {
+    const lowerMessage = userMessage.toLowerCase();
+    
+    // Buscar en los temas de maquillaje
+    for (const topic of makeupTopics) {
+        for (const keyword of topic.keywords) {
+            if (lowerMessage.includes(keyword)) {
+                const randomIndex = Math.floor(Math.random() * topic.responses.length);
+                return topic.responses[randomIndex];
+            }
+        }
+    }
+    
+    // Respuestas para saludos y agradecimientos
+    if (lowerMessage.includes('hola') || lowerMessage.includes('hi') || lowerMessage.includes('buenas')) {
+        return '¡Hola preciosa! 💖 ¿En qué aspecto del maquillaje te gustaría que te ayude hoy?';
+    }
+    
+    if (lowerMessage.includes('gracias') || lowerMessage.includes('thank')) {
+        return '¡De nada! 😊 Siempre estoy aquí para ayudarte a lucir radiante. ¿Hay algo más en lo que pueda asistirte?';
+    }
+    
+    if (lowerMessage.includes('adiós') || lowerMessage.includes('bye') || lowerMessage.includes('chau')) {
+        return '¡Hasta luego, hermosa! 💄✨ Que tengas un día radiante. ¡Vuelve cuando quieras más consejos de maquillaje!';
+    }
+    
+    // Respuestas específicas
+    if (lowerMessage.includes('principiante') || lowerMessage.includes('empezar') || lowerMessage.includes('comenzar')) {
+        return '🌟 ¡Perfecto para empezar! Te recomiendo comenzar con: 1) Una buena base 2) Corrector 3) Máscara de pestañas 4) Un labial nude. ¿Te gustaría consejos específicos para alguno?';
+    }
+    
+    if (lowerMessage.includes('rutina') || lowerMessage.includes('diario') || lowerMessage.includes('día')) {
+        return '✨ Rutina diaria perfecta: 1) Limpia e hidrata 2) Primer 3) Base ligera 4) Corrector 5) Polvo translúcido 6) Rubor sutil 7) Máscara 8) Labial nude. ¡Simple y efectiva!';
+    }
+    
+    if (lowerMessage.includes('noche') || lowerMessage.includes('fiesta') || lowerMessage.includes('evento')) {
+        return '🌙 Para la noche intensifica: smokey eyes, delineador marcado, pestañas dramáticas, contouring definido y labial statement. ¡Serás el centro de atención!';
+    }
+    
+    // Respuesta por defecto
+    const defaultResponses = [
+        '✨ ¡Interesante pregunta! Te recomiendo ser más específica. Puedo ayudarte con maquillaje de ojos, labios, base, contouring, recomendaciones de productos y mucho más. ¿Qué te interesa saber?',
+        '💄 Me encanta ayudarte con el maquillaje. ¿Podrías ser más específica? Puedo darte consejos sobre técnicas, productos, tutoriales paso a paso y mucho más.',
+        '🌟 ¡Estoy aquí para ayudarte! Cuéntame más detalles sobre lo que necesitas: ¿es para el día o la noche? ¿Buscas algo natural o más dramático?'
+    ];
+    
+    return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+}
+
+// Función para obtener sugerencias aleatorias
+function getRandomSuggestions(count) {
+    const shuffled = [...quickSuggestions].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+}
+
+// Función para mostrar indicador de escritura
+function showTypingIndicator() {
+    isTyping = true;
+    const typingIndicator = document.getElementById('typingIndicator');
+    typingIndicator.style.display = 'flex';
+    scrollToBottom();
+}
+
+// Función para ocultar indicador de escritura
+function hideTypingIndicator() {
+    isTyping = false;
+    const typingIndicator = document.getElementById('typingIndicator');
+    typingIndicator.style.display = 'none';
+}
+
+// Función para hacer scroll al final
+function scrollToBottom() {
+    const messagesContainer = document.getElementById('chatMessages');
+    setTimeout(() => {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }, 100);
+}
